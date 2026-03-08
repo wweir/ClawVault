@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claw-Vault Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vault: { 50:'#f0fdf4', 100:'#dcfce7', 200:'#bbf7d0', 300:'#86efac', 400:'#4ade80', 500:'#22c55e', 600:'#16a34a', 700:'#15803d', 800:'#166534', 900:'#14532d' },
+                        surface: { 800:'#1e1e2e', 850:'#181825', 900:'#11111b', 950:'#0a0a14' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .fade-in { animation: fadeIn .3s ease-in; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+        .slide-down { animation: slideDown .25s ease-out; }
+        @keyframes slideDown { from{opacity:0;max-height:0} to{opacity:1;max-height:600px} }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #11111b; }
+        ::-webkit-scrollbar-thumb { background: #313244; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #45475a; }
+        .toggle-checkbox:checked { right: 0; border-color: #22c55e; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #22c55e; }
+        .toggle-checkbox { transition: all .2s ease; }
+        .toggle-label { transition: background-color .2s ease; }
+        .tab-active { border-bottom: 2px solid #22c55e; color: #22c55e; }
+        .badge { padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; letter-spacing: .03em; }
+    </style>
+</head>
+<body class="bg-surface-950 text-gray-200 min-h-screen">
+<div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-60 bg-surface-900 border-r border-gray-800/60 flex flex-col fixed h-full z-30">
+        <div class="p-5 flex items-center gap-3 border-b border-gray-800/60">
+            <div class="w-9 h-9 bg-gradient-to-br from-vault-500 to-vault-700 rounded-lg flex items-center justify-center text-lg shadow-lg shadow-vault-500/20">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+                <h1 class="text-base font-bold text-white leading-tight">Claw-Vault</h1>
+                <p class="text-[11px] text-gray-500 font-medium">Security Dashboard</p>
+            </div>
+        </div>
+        <nav class="flex-1 py-3 px-3 space-y-1">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+            </button>
+            <button onclick="switchTab('events')" id="nav-events" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Events
+            </button>
+            <button onclick="switchTab('config')" id="nav-config" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Configuration
+            </button>
+            <button onclick="switchTab('agents')" id="nav-agents" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Agents
+            </button>
+            <button onclick="switchTab('test')" id="nav-test" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Test
+            </button>
+        </nav>
+        <div class="p-4 border-t border-gray-800/60">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-vault-500 rounded-full pulse-dot"></span>
+                <span class="text-xs text-gray-500">System Active</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-60">
+        <header class="sticky top-0 z-20 bg-surface-950/80 backdrop-blur-xl border-b border-gray-800/40 px-8 py-4 flex items-center justify-between">
+            <h2 id="page-title" class="text-lg font-semibold text-white">Dashboard</h2>
+            <div class="flex items-center gap-3">
+                <button onclick="refreshAll()" class="px-3 py-1.5 text-xs font-medium text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    Refresh
+                </button>
+            </div>
+        </header>
+
+        <div class="p-8">
+            <!-- ============ DASHBOARD TAB ============ -->
+            <section id="tab-dashboard" class="tab-content fade-in">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                    <div class="bg-surface-900 rounded-2xl p-5 border border-gray-800/50 hover:border-gray-700/60 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Scans</span>
+                            <div class="w-8 h-8 bg-vault-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-vault-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                        </div>
+                        <div id="stat-scans" class="text-3xl font-bold text-white">0</div>
+                        <div class="text-xs text-gray-500 mt-1">Total scans today</div>
+                    </div>
+                    <div class="bg-surface-900 rounded-2xl p-5 border border-gray-800/50 hover:border-gray-700/60 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Threats</span>
+                            <div class="w-8 h-8 bg-red-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </div>
+                        </div>
+                        <div id="stat-threats" class="text-3xl font-bold text-white">0</div>
+                        <div class="text-xs text-gray-500 mt-1">Threats detected</div>
+                    </div>
+                    <div class="bg-surface-900 rounded-2xl p-5 border border-gray-800/50 hover:border-gray-700/60 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Tokens</span>
+                            <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                        </div>
+                        <div id="stat-tokens" class="text-3xl font-bold text-white">-</div>
+                        <div class="text-xs text-gray-500 mt-1">Tokens used</div>
+                    </div>
+                    <div class="bg-surface-900 rounded-2xl p-5 border border-gray-800/50 hover:border-gray-700/60 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Agents</span>
+                            <div class="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                            </div>
+                        </div>
+                        <div id="stat-agents" class="text-3xl font-bold text-white">0</div>
+                        <div class="text-xs text-gray-500 mt-1">Active agents</div>
+                    </div>
+                </div>
+
+                <!-- Budget Bar -->
+                <div class="bg-surface-900 rounded-2xl p-5 border border-gray-800/50 mb-8">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm font-medium text-gray-400">Daily Token Budget</span>
+                        <span id="budget-text" class="text-sm text-gray-500 font-mono">0 / 50,000</span>
+                    </div>
+                    <div class="w-full bg-surface-800 rounded-full h-2.5">
+                        <div id="budget-bar" class="bg-gradient-to-r from-vault-600 to-vault-400 h-2.5 rounded-full transition-all duration-500" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Overview - last 5 events -->
+                <div class="bg-surface-900 rounded-2xl border border-gray-800/50">
+                    <div class="px-6 py-4 border-b border-gray-800/40 flex justify-between items-center">
+                        <h3 class="text-sm font-semibold text-white">Recent Scans</h3>
+                        <button onclick="switchTab('events')" class="text-xs text-vault-500 hover:text-vault-400 font-medium">View All &rarr;</button>
+                    </div>
+                    <div id="dashboard-events" class="divide-y divide-gray-800/40">
+                        <div class="px-6 py-10 text-center text-gray-600 text-sm">No scan history yet. Run a test to get started.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ EVENTS TAB ============ -->
+            <section id="tab-events" class="tab-content hidden fade-in">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-base font-semibold text-white">Scan Events</h3>
+                        <p class="text-xs text-gray-500 mt-1">Click any event to expand details</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="loadScanHistory()" class="px-4 py-2 bg-vault-600 hover:bg-vault-500 text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            Refresh
+                        </button>
+                        <select id="events-agent-filter" onchange="renderEvents(scanHistory)" class="bg-surface-800 border border-gray-700/50 text-gray-300 text-xs rounded-lg px-3 py-2 focus:ring-vault-500 focus:border-vault-500">
+                            <option value="">All Agents</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="events-list" class="space-y-3">
+                    <div class="text-center text-gray-600 text-sm py-12">No events yet.</div>
+                </div>
+            </section>
+
+            <!-- ============ CONFIG TAB ============ -->
+            <section id="tab-config" class="tab-content hidden fade-in">
+                <!-- Guard Mode -->
+                <div class="bg-surface-900 rounded-2xl border border-gray-800/50 p-6 mb-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-7 h-7 bg-vault-500/10 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-vault-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h4 class="text-sm font-semibold text-white">Guard Mode</h4>
+                        <span id="guard-mode-badge" class="badge bg-green-500/10 text-green-400 ml-2">permissive</span>
+                    </div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <select id="guard-mode-select" onchange="updateGuardMode(this.value)" class="bg-surface-800 border border-gray-700/50 text-gray-300 text-sm rounded-lg px-4 py-2.5 focus:ring-vault-500 focus:border-vault-500">
+                            <option value="permissive">Permissive</option>
+                            <option value="interactive">Interactive</option>
+                            <option value="strict">Strict</option>
+                        </select>
+                    </div>
+                    <div id="guard-mode-desc" class="text-xs text-gray-500 mb-4 leading-relaxed"></div>
+                    <!-- Auto-Sanitize Toggle -->
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-surface-800/50 border border-gray-800/30">
+                        <div>
+                            <div class="text-sm font-medium text-gray-200">Auto-Sanitize</div>
+                            <div class="text-xs text-gray-500 mt-0.5">Mask sensitive data (keys, PII) before sending to AI, restore in response</div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="auto-sanitize-toggle" class="sr-only peer" checked onchange="updateAutoSanitize(this.checked)">
+                            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-vault-500"></div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-3">Changes take effect immediately and are saved to config.yaml.</p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-base font-semibold text-white">Global Detection Configuration</h3>
+                    <p class="text-xs text-gray-500 mt-1">Enable or disable detection categories globally</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <!-- Sensitive Data -->
+                    <div class="bg-surface-900 rounded-2xl border border-gray-800/50 p-6">
+                        <div class="flex items-center gap-2 mb-5">
+                            <div class="w-7 h-7 bg-amber-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </div>
+                            <h4 class="text-sm font-semibold text-white">Sensitive Data Detection</h4>
+                        </div>
+                        <div class="space-y-4" id="config-sensitive-toggles">
+                            <!-- populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Threats -->
+                    <div class="bg-surface-900 rounded-2xl border border-gray-800/50 p-6">
+                        <div class="flex items-center gap-2 mb-5">
+                            <div class="w-7 h-7 bg-red-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <h4 class="text-sm font-semibold text-white">Threat Detection</h4>
+                        </div>
+                        <div class="space-y-4" id="config-threat-toggles">
+                            <!-- populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ AGENTS TAB ============ -->
+            <section id="tab-agents" class="tab-content hidden fade-in">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-base font-semibold text-white">Agent Management</h3>
+                        <p class="text-xs text-gray-500 mt-1">Configure detection per agent for fine-grained control</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="syncAgents()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            Sync from OpenClaw
+                        </button>
+                        <button onclick="showAddAgentModal()" class="px-4 py-2 bg-vault-600 hover:bg-vault-500 text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            Add Agent
+                        </button>
+                    </div>
+                </div>
+                <div id="agents-list" class="space-y-4">
+                    <div class="text-center text-gray-600 text-sm py-12">No agents configured. Add an agent to get started.</div>
+                </div>
+            </section>
+
+            <!-- ============ TEST TAB ============ -->
+            <section id="tab-test" class="tab-content hidden fade-in">
+                <div class="mb-6">
+                    <h3 class="text-base font-semibold text-white">Quick Test Cases</h3>
+                    <p class="text-xs text-gray-500 mt-1">Click a test case to run it through the detection engine</p>
+                </div>
+
+                <!-- Custom test -->
+                <div class="bg-surface-900 rounded-2xl border border-gray-800/50 p-6 mb-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg class="w-4 h-4 text-vault-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <h4 class="text-sm font-semibold text-white">Custom Scan</h4>
+                    </div>
+                    <textarea id="custom-scan-input" rows="3" class="w-full bg-surface-800 border border-gray-700/50 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:ring-1 focus:ring-vault-500 focus:border-vault-500 resize-none" placeholder="Enter text to scan..."></textarea>
+                    <div class="flex items-center gap-3 mt-3">
+                        <select id="custom-scan-agent" class="bg-surface-800 border border-gray-700/50 text-gray-300 text-xs rounded-lg px-3 py-2">
+                            <option value="">No Agent</option>
+                        </select>
+                        <button onclick="runCustomScan()" class="px-4 py-2 bg-vault-600 hover:bg-vault-500 text-white text-xs font-semibold rounded-lg transition-colors">
+                            Run Scan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Test result area -->
+                <div id="test-result-area" class="hidden mb-6">
+                    <div class="bg-surface-900 rounded-2xl border border-gray-800/50 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-sm font-semibold text-white">Scan Result</h4>
+                            <button onclick="document.getElementById('test-result-area').classList.add('hidden')" class="text-gray-500 hover:text-gray-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <div id="test-result-content"></div>
+                    </div>
+                </div>
+
+                <!-- Built-in test cases -->
+                <div id="test-cases-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="text-center text-gray-600 text-sm py-8 col-span-2">Loading test cases...</div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- Add Agent Modal -->
+<div id="agent-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAgentModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-surface-900 rounded-2xl border border-gray-800/50 shadow-2xl p-6 fade-in">
+        <div class="flex items-center justify-between mb-5">
+            <h3 class="text-base font-semibold text-white">Add / Edit Agent</h3>
+            <button onclick="closeAgentModal()" class="text-gray-500 hover:text-gray-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs text-gray-400 mb-1.5 font-medium">Agent Name</label>
+                <input id="agent-name" type="text" class="w-full bg-surface-800 border border-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-200 focus:ring-1 focus:ring-vault-500" placeholder="e.g. coding-assistant">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 mb-1.5 font-medium">Description</label>
+                <input id="agent-desc" type="text" class="w-full bg-surface-800 border border-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-200 focus:ring-1 focus:ring-vault-500" placeholder="e.g. Code generation agent">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 mb-1.5 font-medium">Guard Mode</label>
+                <select id="agent-guard-mode" class="w-full bg-surface-800 border border-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-200">
+                    <option value="interactive">Interactive</option>
+                    <option value="strict">Strict</option>
+                    <option value="permissive">Permissive</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 mb-2 font-medium">Detection Items</label>
+                <div id="agent-detection-toggles" class="grid grid-cols-2 gap-2">
+                    <!-- populated by JS -->
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="closeAgentModal()" class="px-4 py-2 text-xs font-medium text-gray-400 bg-white/5 hover:bg-white/10 rounded-lg">Cancel</button>
+            <button onclick="saveAgent()" class="px-4 py-2 text-xs font-semibold text-white bg-vault-600 hover:bg-vault-500 rounded-lg">Save Agent</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===================== Constants =====================
+const DETECTION_ITEMS = {
+    api_keys:          { label: 'API Keys',          group: 'sensitive', icon: '🔑' },
+    passwords:         { label: 'Passwords',         group: 'sensitive', icon: '🔒' },
+    private_ips:       { label: 'Private IPs',       group: 'sensitive', icon: '🌐' },
+    pii:               { label: 'PII (Phone/ID)',    group: 'sensitive', icon: '👤' },
+    jwt_tokens:        { label: 'JWT Tokens',        group: 'sensitive', icon: '🎫' },
+    ssh_keys:          { label: 'SSH Keys',          group: 'sensitive', icon: '🗝️' },
+    credit_cards:      { label: 'Credit Cards',      group: 'sensitive', icon: '💳' },
+    emails:            { label: 'Emails',            group: 'sensitive', icon: '📧' },
+    generic_secrets:   { label: 'Generic Secrets',   group: 'sensitive', icon: '🔐' },
+    dangerous_commands:{ label: 'Dangerous Commands', group: 'threat',   icon: '⚠️' },
+    prompt_injection:  { label: 'Prompt Injection',  group: 'threat',   icon: '💉' },
+};
+
+const THREAT_COLORS = {
+    safe:     { bg: 'bg-gray-500/10',   text: 'text-gray-400',   border: 'border-gray-500/20' },
+    low:      { bg: 'bg-blue-500/10',   text: 'text-blue-400',   border: 'border-blue-500/20' },
+    medium:   { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/20' },
+    high:     { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20' },
+    critical: { bg: 'bg-red-500/10',    text: 'text-red-400',    border: 'border-red-500/20' },
+};
+
+const CATEGORY_BADGE = {
+    sensitive: { bg: 'bg-amber-500/15', text: 'text-amber-400', label: 'Sensitive' },
+    command:   { bg: 'bg-red-500/15',   text: 'text-red-400',   label: 'Command' },
+    injection: { bg: 'bg-purple-500/15',text: 'text-purple-400',label: 'Injection' },
+    mixed:     { bg: 'bg-pink-500/15',  text: 'text-pink-400',  label: 'Mixed' },
+};
+
+// ===================== State =====================
+let currentTab = 'dashboard';
+let scanHistory = [];
+let agents = [];
+let detectionConfig = {};
+
+// ===================== API =====================
+async function api(path, opts = {}) {
+    try {
+        const r = await fetch('/api' + path, {
+            headers: { 'Content-Type': 'application/json', ...opts.headers },
+            ...opts,
+        });
+        return await r.json();
+    } catch(e) { console.error('API error:', e); return null; }
+}
+
+// ===================== Tab Navigation =====================
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById('tab-' + tab).classList.remove('hidden');
+
+    document.querySelectorAll('.nav-btn').forEach(el => {
+        el.classList.remove('bg-vault-500/10', 'text-vault-400');
+        el.classList.add('text-gray-400');
+    });
+    const active = document.getElementById('nav-' + tab);
+    active.classList.add('bg-vault-500/10', 'text-vault-400');
+    active.classList.remove('text-gray-400');
+
+    const titles = { dashboard: 'Dashboard', events: 'Scan Events', config: 'Configuration', agents: 'Agent Management', test: 'Quick Test' };
+    document.getElementById('page-title').textContent = titles[tab] || tab;
+
+    if (tab === 'events') loadScanHistory();
+    if (tab === 'config') loadDetectionConfig();
+    if (tab === 'agents') loadAgents();
+    if (tab === 'test') loadTestCases();
+}
+
+// ===================== Dashboard =====================
+async function refreshDashboard() {
+    const [summary, budget, history, agentList] = await Promise.all([
+        api('/summary'), api('/budget'), api('/scan-history?limit=5'), api('/agents')
+    ]);
+
+    // Stats
+    const totalScans = history ? history.length : 0;
+    const totalThreats = history ? history.filter(e => e.has_threats).length : 0;
+    document.getElementById('stat-scans').textContent = scanHistory.length || totalScans;
+    document.getElementById('stat-threats').textContent = scanHistory.filter(e => e.has_threats).length || totalThreats;
+
+    if (summary) {
+        document.getElementById('stat-tokens').textContent = (summary.total_tokens || 0).toLocaleString();
+    }
+    document.getElementById('stat-agents').textContent = agentList ? agentList.length : 0;
+
+    // Budget
+    if (budget) {
+        const pct = Math.min(budget.daily_pct || 0, 100);
+        document.getElementById('budget-bar').style.width = pct + '%';
+        if (pct > 80) document.getElementById('budget-bar').className = 'bg-gradient-to-r from-red-600 to-red-400 h-2.5 rounded-full transition-all duration-500';
+        else if (pct > 60) document.getElementById('budget-bar').className = 'bg-gradient-to-r from-yellow-600 to-yellow-400 h-2.5 rounded-full transition-all duration-500';
+        document.getElementById('budget-text').textContent = (budget.daily_used||0).toLocaleString() + ' / ' + (budget.daily_limit||0).toLocaleString();
+    }
+
+    // Recent events
+    const events = await api('/scan-history?limit=5');
+    renderDashboardEvents(events || []);
+}
+
+function renderDashboardEvents(events) {
+    const el = document.getElementById('dashboard-events');
+    if (!events.length) {
+        el.innerHTML = '<div class="px-6 py-10 text-center text-gray-600 text-sm">No scan history yet. Go to Test tab to run a scan.</div>';
+        return;
+    }
+    el.innerHTML = events.map(e => {
+        const tc = THREAT_COLORS[e.threat_level] || THREAT_COLORS.safe;
+        const time = e.timestamp ? new Date(e.timestamp).toLocaleTimeString() : '';
+        // Build title: detected → detection labels; allowed → agent chat; test → preview
+        let title = '';
+        if (e.has_threats) {
+            const tags = [];
+            if (e.sensitive?.length) tags.push(...e.sensitive.map(s => s.type));
+            if (e.commands?.length) tags.push(...e.commands.map(c => c.reason));
+            if (e.injections?.length) tags.push(...e.injections.map(j => j.type));
+            title = tags.length ? tags.join(', ') : '[detected content hidden]';
+        } else if (e.action === 'allow') {
+            title = e.agent_name ? e.agent_name + ' chat' : 'Chat message';
+        } else if (!e.action) {
+            title = escHtml(e.input_preview || 'N/A');
+        } else {
+            title = e.agent_name ? e.agent_name + ' chat' : 'Chat message';
+        }
+        return `
+        <div class="px-6 py-3.5 flex items-center gap-4 hover:bg-white/[.02] transition-colors cursor-pointer" onclick="switchTab('events')">
+            <div class="w-8 h-8 ${tc.bg} rounded-lg flex items-center justify-center shrink-0">
+                <span class="text-sm">${e.has_threats ? '🚨' : '✅'}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-sm text-gray-200 truncate">${title}</div>
+                <div class="text-xs text-gray-500 mt-0.5">${e.agent_name ? e.agent_name + ' · ' : ''}${e.total_detections} detection(s)</div>
+            </div>
+            <span class="badge ${tc.bg} ${tc.text}">${e.threat_level}</span>
+            <span class="text-xs text-gray-600 font-mono">${time}</span>
+        </div>`;
+    }).join('');
+}
+
+// ===================== Events =====================
+async function loadScanHistory() {
+    const data = await api('/scan-history?limit=200');
+    if (data) scanHistory = data;
+    populateAgentSelects();
+    renderEvents(scanHistory);
+}
+
+function renderEvents(events) {
+    const el = document.getElementById('events-list');
+    // Filter out test-case scans — only show proxy events
+    events = events.filter(e => e.source !== 'test');
+    // Apply agent filter if selected
+    const agentFilter = document.getElementById('events-agent-filter')?.value || '';
+    if (agentFilter) {
+        events = events.filter(e => e.agent_name === agentFilter || e.agent_id === agentFilter);
+    }
+    if (!events.length) {
+        el.innerHTML = '<div class="text-center text-gray-600 text-sm py-12">No events yet. Chat through OpenClaw to generate events.</div>';
+        return;
+    }
+    const ACTION_BADGE = {
+        allow:    { bg: 'bg-green-500/10', text: 'text-green-400', label: 'Allowed' },
+        block:    { bg: 'bg-red-500/10',   text: 'text-red-400',   label: 'Blocked' },
+        sanitize: { bg: 'bg-blue-500/10',  text: 'text-blue-400',  label: 'Sanitized' },
+        ask_user: { bg: 'bg-yellow-500/10',text: 'text-yellow-400',label: 'Warning' },
+    };
+    el.innerHTML = events.map((e, i) => {
+        const tc = THREAT_COLORS[e.threat_level] || THREAT_COLORS.safe;
+        const time = e.timestamp ? new Date(e.timestamp).toLocaleString() : '';
+        const isProxy = e.source === 'proxy';
+        const actionBadge = ACTION_BADGE[e.action] || ACTION_BADGE.allow;
+        // Category badges
+        const cats = [];
+        if (e.sensitive?.length) cats.push('sensitive');
+        if (e.commands?.length) cats.push('command');
+        if (e.injections?.length) cats.push('injection');
+
+        return `
+        <div class="bg-surface-900 rounded-2xl border ${tc.border} overflow-hidden">
+            <div class="px-5 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/[.02] transition-colors" onclick="toggleEventDetail('${e.id}', ${i})">
+                <div class="w-9 h-9 ${tc.bg} rounded-xl flex items-center justify-center shrink-0">
+                    <span class="text-base">${e.has_threats ? '🚨' : '✅'}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        ${isProxy ? '<span class="badge bg-cyan-500/10 text-cyan-400">Proxy</span>' : ''}
+                        <span class="text-sm font-medium text-gray-200 truncate max-w-md">${e.has_threats ? (function(){ const t=[]; if(e.sensitive?.length) t.push(...e.sensitive.map(s=>s.type)); if(e.commands?.length) t.push(...e.commands.map(c=>c.reason)); if(e.injections?.length) t.push(...e.injections.map(j=>j.type)); return t.length ? t.join(', ') : '[detected content hidden]'; })() : (e.action === 'allow' ? (e.agent_name ? escHtml(e.agent_name) + ' chat' : 'Chat message') : escHtml(e.input_preview || 'N/A'))}</span>
+                        ${cats.map(c => { const b = CATEGORY_BADGE[c]; return `<span class="badge ${b.bg} ${b.text}">${b.label}</span>`; }).join('')}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">
+                        ${e.agent_name ? '<span class="text-vault-500">' + escHtml(e.agent_name) + '</span> · ' : ''}
+                        ${e.total_detections} detection(s) · Risk ${e.max_risk_score?.toFixed(1) || '0.0'}
+                    </div>
+                </div>
+                <span class="badge ${actionBadge.bg} ${actionBadge.text}">${actionBadge.label}</span>
+                <span class="badge ${tc.bg} ${tc.text} uppercase">${e.threat_level}</span>
+                <span class="text-xs text-gray-600 font-mono whitespace-nowrap">${time}</span>
+                <svg id="chevron-${i}" class="w-4 h-4 text-gray-600 transition-transform" style="${_expandedEvents.has(e.id) ? 'transform:rotate(180deg)' : ''}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div id="event-detail-${i}" class="${_expandedEvents.has(e.id) ? '' : 'hidden'} border-t border-gray-800/40">
+                ${renderEventDetail(e)}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderEventDetail(e) {
+    let html = '<div class="p-5 space-y-4 slide-down">';
+
+    // Input preview:
+    // - allowed proxy events: hide input text entirely (metadata noise)
+    // - blocked/sanitized: show "[Content blocked/sanitized]" placeholder
+    // - test results (no action): show raw text
+    if (!e.action && (e.input_preview || e.input_preview === '')) {
+        // Test-case results — always show raw text
+        html += `<div>
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Input Text</div>
+            <pre class="bg-surface-950 rounded-xl p-4 text-xs text-gray-300 whitespace-pre-wrap break-all font-mono border border-gray-800/30">${escHtml(e.input_preview || '')}</pre>
+        </div>`;
+    } else if (e.action && e.action !== 'allow' && e.has_threats && e.input_preview) {
+        // Blocked / sanitized with threats — hide content
+        html += `<div>
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Input Text <span class="text-gray-600 normal-case font-normal">(original content hidden for security)</span></div>
+            <pre class="bg-surface-950 rounded-xl p-4 text-xs text-gray-500 italic whitespace-pre-wrap break-all font-mono border border-gray-800/30">[Content ${e.action === 'block' ? 'blocked' : e.action === 'sanitize' ? 'sanitized' : 'flagged'} — see detection details below]</pre>
+        </div>`;
+    }
+
+    // Sensitive
+    if (e.sensitive?.length) {
+        html += `<div>
+            <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <span>🔑</span> Sensitive Data (${e.sensitive.length})
+            </div>
+            <div class="space-y-2">
+                ${e.sensitive.map(s => `
+                    <div class="bg-amber-500/5 border border-amber-500/10 rounded-xl px-4 py-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-amber-300">${escHtml(s.type)}</span>
+                            <span class="text-xs text-gray-500 ml-2">${escHtml(s.description)}</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <code class="text-xs bg-surface-800 px-2 py-0.5 rounded text-gray-400 font-mono">${escHtml(s.masked)}</code>
+                            <span class="badge bg-amber-500/15 text-amber-400">Risk ${s.risk}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+
+    // Commands
+    if (e.commands?.length) {
+        html += `<div>
+            <div class="text-xs font-semibold text-red-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <span>⚠️</span> Dangerous Commands (${e.commands.length})
+            </div>
+            <div class="space-y-2">
+                ${e.commands.map(c => `
+                    <div class="bg-red-500/5 border border-red-500/10 rounded-xl px-4 py-3">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-semibold text-red-300">${escHtml(c.reason)}</span>
+                            <span class="badge bg-red-500/15 text-red-400">Risk ${c.risk} · ${c.level}</span>
+                        </div>
+                        <code class="text-xs text-gray-400 font-mono">${escHtml(c.command)}</code>
+                    </div>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+
+    // Injections
+    if (e.injections?.length) {
+        html += `<div>
+            <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <span>💉</span> Prompt Injections (${e.injections.length})
+            </div>
+            <div class="space-y-2">
+                ${e.injections.map(inj => `
+                    <div class="bg-purple-500/5 border border-purple-500/10 rounded-xl px-4 py-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-purple-300">${escHtml(inj.type)}</span>
+                            <span class="text-xs text-gray-500 ml-2">${escHtml(inj.description)}</span>
+                        </div>
+                        <span class="badge bg-purple-500/15 text-purple-400">Risk ${inj.risk}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+
+    if (!e.sensitive?.length && !e.commands?.length && !e.injections?.length) {
+        html += '<div class="text-center text-gray-600 text-sm py-4">No threats detected.</div>';
+    }
+
+    html += '</div>';
+    return html;
+}
+
+// Track which event IDs are expanded so auto-refresh preserves state
+const _expandedEvents = new Set();
+
+function toggleEventDetail(eventId, i) {
+    const detail = document.getElementById('event-detail-' + i);
+    const chevron = document.getElementById('chevron-' + i);
+    if (detail.classList.contains('hidden')) {
+        detail.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+        _expandedEvents.add(eventId);
+    } else {
+        detail.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+        _expandedEvents.delete(eventId);
+    }
+}
+
+// ===================== Config =====================
+const MODE_DESC = {
+    permissive: 'All traffic allowed with logging. Auto-sanitize masks sensitive data if enabled. No blocking.',
+    interactive: 'Sensitive data auto-sanitized (masked & restored). Prompt injections blocked. Commands trigger warnings.',
+    strict: 'All detected threats are BLOCKED — sensitive data, injections, and dangerous commands. Maximum protection.',
+};
+
+async function loadDetectionConfig() {
+    const [config, guard] = await Promise.all([api('/config/detection'), api('/config/guard')]);
+    if (config) detectionConfig = config;
+    renderConfigToggles();
+    if (guard) {
+        const sel = document.getElementById('guard-mode-select');
+        if (sel) sel.value = guard.mode || 'permissive';
+        updateGuardModeBadge(guard.mode || 'permissive');
+        const toggle = document.getElementById('auto-sanitize-toggle');
+        if (toggle) toggle.checked = guard.auto_sanitize !== false;
+    }
+}
+
+async function updateGuardMode(mode) {
+    await api('/config/guard', { method: 'POST', body: JSON.stringify({ mode }) });
+    updateGuardModeBadge(mode);
+}
+
+async function updateAutoSanitize(enabled) {
+    await api('/config/guard', { method: 'POST', body: JSON.stringify({ auto_sanitize: enabled }) });
+}
+
+function updateGuardModeBadge(mode) {
+    const badge = document.getElementById('guard-mode-badge');
+    if (!badge) return;
+    const colors = { permissive: 'bg-green-500/10 text-green-400', interactive: 'bg-blue-500/10 text-blue-400', strict: 'bg-red-500/10 text-red-400' };
+    badge.className = 'badge ' + (colors[mode] || colors.permissive);
+    badge.textContent = mode;
+    const desc = document.getElementById('guard-mode-desc');
+    if (desc) desc.textContent = MODE_DESC[mode] || '';
+}
+
+function renderConfigToggles() {
+    const sensitiveEl = document.getElementById('config-sensitive-toggles');
+    const threatEl = document.getElementById('config-threat-toggles');
+    sensitiveEl.innerHTML = '';
+    threatEl.innerHTML = '';
+
+    for (const [key, info] of Object.entries(DETECTION_ITEMS)) {
+        const checked = detectionConfig[key] !== false;
+        const html = `
+        <div class="flex items-center justify-between py-1">
+            <div class="flex items-center gap-2.5">
+                <span class="text-sm">${info.icon}</span>
+                <span class="text-sm text-gray-300">${info.label}</span>
+            </div>
+            <div class="relative inline-block w-10 align-middle select-none">
+                <input type="checkbox" id="cfg-${key}" ${checked ? 'checked' : ''} onchange="updateConfig('${key}', this.checked)"
+                    class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 border-gray-600 appearance-none cursor-pointer top-0.5 ${checked ? 'right-0' : 'left-0'}"
+                    style="${checked ? 'right:0;border-color:#22c55e' : 'right:auto;left:0'}"/>
+                <label for="cfg-${key}" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer ${checked ? 'bg-vault-500' : 'bg-gray-700'}" style="background-color:${checked?'#22c55e':'#374151'}"></label>
+            </div>
+        </div>`;
+        if (info.group === 'sensitive') sensitiveEl.innerHTML += html;
+        else threatEl.innerHTML += html;
+    }
+}
+
+async function updateConfig(key, value) {
+    detectionConfig[key] = value;
+    await api('/config/detection', {
+        method: 'POST',
+        body: JSON.stringify({ [key]: value }),
+    });
+    // Update toggle visual immediately
+    const cb = document.getElementById('cfg-' + key);
+    const label = cb.nextElementSibling;
+    if (value) {
+        cb.style.right = '0'; cb.style.left = 'auto'; cb.style.borderColor = '#22c55e';
+        label.style.backgroundColor = '#22c55e';
+    } else {
+        cb.style.right = 'auto'; cb.style.left = '0'; cb.style.borderColor = '#4b5563';
+        label.style.backgroundColor = '#374151';
+    }
+}
+
+// ===================== Agents =====================
+async function loadAgents() {
+    const data = await api('/agents');
+    if (data) agents = data;
+    renderAgents();
+    populateAgentSelects();
+}
+
+function renderAgents() {
+    const el = document.getElementById('agents-list');
+    if (!agents.length) {
+        el.innerHTML = '<div class="text-center text-gray-600 text-sm py-12">No agents configured. Add an agent to get started.</div>';
+        return;
+    }
+    el.innerHTML = agents.map(a => {
+        const enabledCount = Object.values(a.detection || {}).filter(Boolean).length;
+        const totalCount = Object.keys(a.detection || {}).length;
+        const modeColor = a.guard_mode === 'strict' ? 'text-red-400 bg-red-500/10' : a.guard_mode === 'permissive' ? 'text-green-400 bg-green-500/10' : 'text-blue-400 bg-blue-500/10';
+        return `
+        <div class="bg-surface-900 rounded-2xl border border-gray-800/50 overflow-hidden">
+            <div class="px-6 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/[.02]" onclick="toggleAgentDetail('${a.id}')">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl flex items-center justify-center text-lg shrink-0">
+                    🤖
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-white">${escHtml(a.name)}</span>
+                        <span class="badge ${modeColor}">${a.guard_mode}</span>
+                        ${!a.enabled ? '<span class="badge bg-gray-500/10 text-gray-500">Disabled</span>' : ''}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-0.5">${escHtml(a.description || 'No description')}</div>
+                </div>
+                <div class="text-right shrink-0">
+                    <div class="text-xs text-gray-500">${enabledCount}/${totalCount} detections</div>
+                    <div class="text-xs text-gray-600 mt-0.5">Scans: ${a.stats?.scans || 0} · Threats: ${a.stats?.threats || 0}</div>
+                </div>
+                <svg id="agent-chevron-${a.id}" class="w-4 h-4 text-gray-600 transition-transform shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div id="agent-detail-${a.id}" class="hidden border-t border-gray-800/40 p-5 slide-down">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
+                    ${Object.entries(DETECTION_ITEMS).map(([key, info]) => {
+                        const on = a.detection?.[key] !== false;
+                        return `<div class="flex items-center gap-2 px-3 py-2 rounded-lg ${on ? 'bg-vault-500/10 border border-vault-500/20' : 'bg-gray-800/30 border border-gray-800/30'}">
+                            <span class="text-sm">${info.icon}</span>
+                            <span class="text-xs ${on ? 'text-vault-400' : 'text-gray-600'}">${info.label}</span>
+                            <span class="ml-auto text-xs ${on ? 'text-vault-500' : 'text-gray-700'}">${on ? 'ON' : 'OFF'}</span>
+                        </div>`;
+                    }).join('')}
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="editAgent('${a.id}')" class="px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 text-gray-300 rounded-lg">Edit</button>
+                    <button onclick="deleteAgent('${a.id}')" class="px-3 py-1.5 text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg">Delete</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function toggleAgentDetail(id) {
+    const detail = document.getElementById('agent-detail-' + id);
+    const chevron = document.getElementById('agent-chevron-' + id);
+    if (detail.classList.contains('hidden')) {
+        detail.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        detail.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+    }
+}
+
+function showAddAgentModal(agentData) {
+    document.getElementById('agent-modal').classList.remove('hidden');
+    document.getElementById('agent-name').value = agentData?.name || '';
+    document.getElementById('agent-desc').value = agentData?.description || '';
+    document.getElementById('agent-guard-mode').value = agentData?.guard_mode || 'interactive';
+
+    const togglesEl = document.getElementById('agent-detection-toggles');
+    togglesEl.innerHTML = Object.entries(DETECTION_ITEMS).map(([key, info]) => {
+        const on = agentData ? agentData.detection?.[key] !== false : true;
+        return `<label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-800 border border-gray-700/30 cursor-pointer hover:border-gray-600/50 transition-colors">
+            <input type="checkbox" id="agent-det-${key}" ${on ? 'checked' : ''} class="w-3.5 h-3.5 rounded border-gray-600 text-vault-500 focus:ring-vault-500 bg-surface-900">
+            <span class="text-xs text-gray-300">${info.icon} ${info.label}</span>
+        </label>`;
+    }).join('');
+}
+
+function closeAgentModal() {
+    document.getElementById('agent-modal').classList.add('hidden');
+}
+
+async function saveAgent() {
+    const name = document.getElementById('agent-name').value.trim();
+    if (!name) return alert('Agent name is required');
+
+    const detection = {};
+    for (const key of Object.keys(DETECTION_ITEMS)) {
+        const cb = document.getElementById('agent-det-' + key);
+        detection[key] = cb ? cb.checked : true;
+    }
+
+    await api('/agents', {
+        method: 'POST',
+        body: JSON.stringify({
+            name,
+            description: document.getElementById('agent-desc').value.trim(),
+            guard_mode: document.getElementById('agent-guard-mode').value,
+            detection,
+        }),
+    });
+    closeAgentModal();
+    await loadAgents();
+}
+
+function editAgent(id) {
+    const agent = agents.find(a => a.id === id);
+    if (agent) showAddAgentModal(agent);
+}
+
+async function syncAgents() {
+    const result = await api('/agents/sync', { method: 'POST' });
+    if (result) {
+        agents = result.agents || [];
+        renderAgents();
+        populateAgentSelects();
+    }
+}
+
+async function deleteAgent(id) {
+    if (!confirm('Delete this agent?')) return;
+    await api('/agents/' + id, { method: 'DELETE' });
+    await loadAgents();
+}
+
+function populateAgentSelects() {
+    const selects = [document.getElementById('events-agent-filter'), document.getElementById('custom-scan-agent')];
+    // Collect agent names from both registered agents and scan history events
+    const agentNames = new Map();
+    for (const a of agents) {
+        agentNames.set(a.id, a.name);
+    }
+    // Also discover agents from proxy events
+    for (const e of scanHistory) {
+        if (e.agent_name && !agentNames.has(e.agent_name)) {
+            agentNames.set(e.agent_name, e.agent_name);
+        }
+    }
+    for (const sel of selects) {
+        if (!sel) continue;
+        const val = sel.value;
+        while (sel.options.length > 1) sel.remove(1);
+        for (const [id, name] of agentNames) {
+            const opt = document.createElement('option');
+            opt.value = id;
+            opt.textContent = name;
+            sel.appendChild(opt);
+        }
+        sel.value = val;
+    }
+}
+
+// ===================== Test Cases =====================
+async function loadTestCases() {
+    const cases = await api('/test-cases');
+    if (!cases) return;
+    const el = document.getElementById('test-cases-grid');
+    el.innerHTML = cases.map(tc => {
+        const cat = CATEGORY_BADGE[tc.category] || CATEGORY_BADGE.mixed;
+        return `
+        <div class="bg-surface-900 rounded-2xl border border-gray-800/50 p-5 hover:border-gray-700/60 transition-colors group">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="badge ${cat.bg} ${cat.text}">${cat.label}</span>
+                    <h4 class="text-sm font-semibold text-white">${escHtml(tc.name)}</h4>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mb-3">${escHtml(tc.description)}</p>
+            <pre class="bg-surface-950 rounded-xl p-3 text-xs text-gray-400 whitespace-pre-wrap break-all font-mono mb-4 border border-gray-800/30 max-h-24 overflow-auto">${escHtml(tc.text)}</pre>
+            <button onclick="runTestCase('${tc.id}', this)" class="w-full px-3 py-2 bg-vault-600/80 hover:bg-vault-500 text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Run Test
+            </button>
+        </div>`;
+    }).join('');
+    // store for later use
+    window._testCases = cases;
+}
+
+async function runTestCase(tcId, btn) {
+    const tc = window._testCases?.find(t => t.id === tcId);
+    if (!tc) return;
+
+    if (btn) { btn.textContent = 'Scanning...'; btn.disabled = true; }
+
+    const agentId = document.getElementById('custom-scan-agent')?.value || null;
+    const result = await api('/scan', {
+        method: 'POST',
+        body: JSON.stringify({ text: tc.text, agent_id: agentId || undefined }),
+    });
+
+    if (btn) {
+        btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Test';
+        btn.disabled = false;
+    }
+
+    if (result) showTestResult(result);
+}
+
+async function runCustomScan() {
+    const text = document.getElementById('custom-scan-input').value.trim();
+    if (!text) return;
+    const agentId = document.getElementById('custom-scan-agent')?.value || null;
+    const result = await api('/scan', {
+        method: 'POST',
+        body: JSON.stringify({ text, agent_id: agentId || undefined }),
+    });
+    if (result) showTestResult(result);
+}
+
+function showTestResult(result) {
+    const area = document.getElementById('test-result-area');
+    const content = document.getElementById('test-result-content');
+    area.classList.remove('hidden');
+
+    const tc = THREAT_COLORS[result.threat_level] || THREAT_COLORS.safe;
+
+    let html = `
+    <div class="flex items-center gap-4 mb-5">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">${result.has_threats ? '🚨' : '✅'}</span>
+            <div>
+                <div class="text-sm font-semibold text-white">${result.has_threats ? 'Threats Detected' : 'No Threats'}</div>
+                <div class="text-xs text-gray-500">${result.total_detections} detection(s) · Max risk ${result.max_risk_score?.toFixed(1)}</div>
+            </div>
+        </div>
+        <span class="badge ${tc.bg} ${tc.text} uppercase ml-auto">${result.threat_level}</span>
+    </div>`;
+
+    html += renderEventDetail(result);
+    content.innerHTML = html;
+
+    // Scroll to result
+    area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Refresh dashboard stats
+    refreshDashboard();
+}
+
+// ===================== Utils =====================
+function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/`/g,'&#96;').replace(/\$/g,'&#36;');
+}
+
+async function refreshAll() {
+    await refreshDashboard();
+    if (currentTab === 'events') await loadScanHistory();
+    if (currentTab === 'agents') await loadAgents();
+}
+
+// ===================== Auto-refresh =====================
+let _autoRefreshInterval = null;
+function startAutoRefresh() {
+    if (_autoRefreshInterval) return;
+    _autoRefreshInterval = setInterval(async () => {
+        await refreshDashboard();
+    }, 5000);
+}
+function stopAutoRefresh() {
+    if (_autoRefreshInterval) { clearInterval(_autoRefreshInterval); _autoRefreshInterval = null; }
+}
+
+// ===================== Init =====================
+switchTab('dashboard');
+refreshDashboard();
+startAutoRefresh();
+</script>
+</body>
+</html>

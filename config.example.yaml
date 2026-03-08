@@ -1,0 +1,46 @@
+# Claw-Vault Configuration
+# Copy to ~/.claw-vault/config.yaml and customize
+
+proxy:
+  host: "127.0.0.1"
+  port: 8765
+  ssl_verify: true
+  intercept_hosts:
+    - "api.openai.com"
+    - "api.anthropic.com"
+    - "api.siliconflow.cn"
+    - "*.openai.azure.com"
+    - "generativelanguage.googleapis.com"
+
+detection:
+  enabled: true
+  api_keys: true
+  passwords: true
+  private_ips: true
+  pii: true
+  custom_patterns: []
+
+guard:
+  mode: "permissive" # permissive | interactive | strict
+  auto_sanitize: false
+  blocked_domains: []
+
+monitor:
+  daily_token_budget: 50000
+  monthly_token_budget: 1000000
+  cost_alert_usd: 50.0
+
+audit:
+  retention_days: 7
+  log_level: "INFO"
+  export_format: "json"
+
+dashboard:
+  enabled: true
+  host: "127.0.0.1"
+  port: 8766
+
+cloud:
+  enabled: false
+  aiscc_api_url: "https://api.aiscc.io/v1/audit"
+  aiscc_api_key: ""

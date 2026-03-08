@@ -1,0 +1,38 @@
+# Claw-Vault 文档
+
+> [English](../README.md)
+
+## 快速上手
+
+| 文档 | 说明 |
+|------|------|
+| [INSTALL_DEV.md](./INSTALL_DEV.md) | 开发环境搭建 |
+| [INSTALL_PRODUCTION.md](./INSTALL_PRODUCTION.md) | 生产环境部署 |
+| [OPENCLAW_INTEGRATION.md](./OPENCLAW_INTEGRATION.md) | OpenClaw 集成指南 |
+
+## 参考文档
+
+| 文档 | 说明 |
+|------|------|
+| [architecture.md](./architecture.md) | 系统架构与模块设计 |
+| [scenarios.md](./scenarios.md) | 使用场景与路线图 |
+| [GUARD_MODE.md](./GUARD_MODE.md) | 安全模式：strict / interactive / permissive |
+
+## 脚本
+
+| 脚本 | 说明 |
+|------|------|
+| `scripts/deploy.sh <ip> [user]` | 部署到云服务器 |
+| `scripts/start.sh` | 启动 Claw-Vault（加 `--with-openclaw` 同时启动 OpenClaw） |
+| `scripts/stop.sh` | 停止所有服务 |
+| `scripts/test.sh` | 运行 CLI + API 测试 |
+| `scripts/setup.sh` | 配置 OpenClaw 代理集成 |
+| `scripts/uninstall.sh` | 卸载并恢复 |
+
+## 归档
+
+历史文档和已废弃脚本在 [`archive/`](../archive/) 目录中。
+
+---
+
+**最后更新**: 2026-03-09

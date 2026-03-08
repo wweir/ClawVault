@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claw-vault"
+version = "0.1.0"
+description = "Physical-level memory isolation vault for AI credentials - Your AI's zero-trust safe"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "SPAI Lab"},
+]
+keywords = ["ai-security", "openclaw", "credential-vault", "api-key-protection", "privacy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+
+dependencies = [
+    "mitmproxy>=10.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "aiosqlite>=0.20.0",
+    "cryptography>=42.0",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.1",
+    "typer[all]>=0.12.0",
+    "structlog>=24.1",
+    "httpx>=0.27.0",
+    "rich>=13.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=4.1",
+    "ruff>=0.3",
+    "mypy>=1.8",
+]
+
+[project.scripts]
+claw-vault = "claw_vault.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/spai-lab/claw-vault"
+Documentation = "https://claw-vault.dev"
+Repository = "https://github.com/spai-lab/claw-vault"
+Issues = "https://github.com/spai-lab/claw-vault/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/claw_vault"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "S", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true

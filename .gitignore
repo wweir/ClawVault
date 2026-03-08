@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Claw-Vault data
+*.db
+*.sqlite
+audit.db
+
+# Config with secrets
+config.yaml
+!config.example.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rust (Phase 3)
+target/
+Cargo.lock
