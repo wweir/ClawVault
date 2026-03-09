@@ -10,8 +10,8 @@
 ## 克隆与安装
 
 ```bash
-git clone https://github.com/tophant-ai/claw-vault.git
-cd claw-vault
+git clone https://github.com/tophant-ai/ClawVault.git
+cd ClawVault
 python3 -m venv venv
 source venv/bin/activate
 pip install -e ".[dev]"
