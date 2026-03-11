@@ -1,7 +1,7 @@
 """Vault-Guard Skill: protect managed files, intercept dangerous commands,
 and block unauthorized data exfiltration.
 
-Covers scenarios: B2 (数据外发拦截) + B4 (恶意命令拦截) + C1 (文件/凭证纳管)
+Covers scenarios: B2 (data exfiltration interception) + B4 (malicious command interception) + C1 (file/credential management)
 """
 
 from __future__ import annotations

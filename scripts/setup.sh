@@ -70,7 +70,7 @@ fi
 
 # Init claw-vault config
 echo "[3/3] Initializing claw-vault config..."
-CONF="$HOME/.claw-vault/config.yaml"
+CONF="$HOME/.ClawVault/config.yaml"
 if [ ! -f "$CONF" ]; then
     claw-vault config init 2>/dev/null || true
 fi

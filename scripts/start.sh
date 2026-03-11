@@ -30,7 +30,7 @@ else
     source "$VENV/bin/activate"
 
     # Ensure ssl_verify is false for dev
-    CONF="$HOME/.claw-vault/config.yaml"
+    CONF="$HOME/.ClawVault/config.yaml"
     if [ -f "$CONF" ] && grep -q "ssl_verify: true" "$CONF"; then
         sed -i 's/ssl_verify: true/ssl_verify: false/' "$CONF" 2>/dev/null || \
         sed -i '' 's/ssl_verify: true/ssl_verify: false/' "$CONF"

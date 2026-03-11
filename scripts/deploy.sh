@@ -1,6 +1,6 @@
 #!/bin/bash
 # One-click deployment and installation script (includes server-side installation)
-# Usage: ./deploy.sh <server_ip> [server_user]
+# Usage: ./deploy.sh <server-ip> [server_user]
 
 set -e
 
@@ -12,7 +12,7 @@ ARCHIVE_NAME="claw-vault.zip"
 
 if [ -z "$SERVER_IP" ]; then
     echo "Error: Please provide server IP address"
-    echo "Usage: $0 <server_ip> [server_user]"
+    echo "Usage: $0 <server-ip> [server_user]"
     echo "Example: $0 123.45.67.89 root"
     exit 1
 fi

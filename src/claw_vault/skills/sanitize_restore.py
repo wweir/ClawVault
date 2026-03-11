@@ -1,7 +1,7 @@
 """Sanitize-Restore Skill: intercept sensitive data in conversations,
 replace with placeholders before sending to AI, restore in responses.
 
-Covers scenarios: A1 (对话敏感信息拦截) + A2 (脱敏替换与还原)
+Covers scenarios: A1 (conversation-sensitive interception) + A2 (masking and restoration)
 """
 
 from __future__ import annotations

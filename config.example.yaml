@@ -1,5 +1,5 @@
 # ClawVault Configuration
-# Copy to ~/.claw-vault/config.yaml and customize
+# Copy to ~/.ClawVault/config.yaml and customize
 
 proxy:
   host: "127.0.0.1"

@@ -30,13 +30,13 @@ ssh root@<server-ip>
 cd ~/prj/claw-vault
 source venv/bin/activate
 
-# Initialize config (creates ~/.claw-vault/config.yaml)
+# Initialize config (creates ~/.ClawVault/config.yaml)
 claw-vault config init
 ```
 
 ### Recommended Production Config
 
-Edit `~/.claw-vault/config.yaml`:
+Edit `~/.ClawVault/config.yaml`:
 
 ```yaml
 proxy:
@@ -124,7 +124,7 @@ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
 pip install -e .
 ```
 
-**HTTPS/SSL errors**: Set `ssl_verify: false` in `~/.claw-vault/config.yaml`.
+**HTTPS/SSL errors**: Set `ssl_verify: false` in `~/.ClawVault/config.yaml`.
 
 **Dashboard not accessible remotely**: Use SSH tunnel (see above).
 

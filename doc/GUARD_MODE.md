@@ -80,7 +80,7 @@ Visit `http://<server-ip>:8766` → **Config** tab → select Guard Mode and Aut
 
 ### Config File
 
-Edit `~/.claw-vault/config.yaml`:
+Edit `~/.ClawVault/config.yaml`:
 
 ```yaml
 guard:

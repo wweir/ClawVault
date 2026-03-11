@@ -129,7 +129,7 @@ claw-vault demo
 ## Configuration
 
 ```yaml
-# ~/.claw-vault/config.yaml
+# ~/.ClawVault/config.yaml
 proxy:
   port: 8765
   intercept_hosts: ["api.openai.com", "api.anthropic.com"]

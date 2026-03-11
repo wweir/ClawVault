@@ -8,7 +8,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-DEFAULT_CONFIG_DIR = Path.home() / ".claw-vault"
+DEFAULT_CONFIG_DIR = Path.home() / ".ClawVault"
 DEFAULT_CONFIG_FILE = DEFAULT_CONFIG_DIR / "config.yaml"
 
 
@@ -96,6 +96,19 @@ def load_settings(config_path: Optional[Path] = None) -> Settings:
     if path.exists():
         with open(path) as f:
             data = yaml.safe_load(f) or {}
+        
+        # Fix corrupted custom_patterns field if present
+        if "detection" in data and "custom_patterns" in data["detection"]:
+            custom_patterns = data["detection"]["custom_patterns"]
+            if isinstance(custom_patterns, list):
+                # Filter out any non-string items (e.g., dict objects)
+                data["detection"]["custom_patterns"] = [
+                    p for p in custom_patterns if isinstance(p, str)
+                ]
+            else:
+                # Reset to empty list if not a list
+                data["detection"]["custom_patterns"] = []
+        
         settings = Settings(**data)
     settings.ensure_dirs()
     return settings

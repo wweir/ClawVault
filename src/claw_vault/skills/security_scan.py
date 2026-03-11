@@ -1,6 +1,6 @@
 """Security-Scan Skill: scan text, files, and Skill packages for security risks.
 
-Covers scenarios: A4 (文件上传内容扫描) + E2 (供应链安全扫描)
+Covers scenarios: A4 (uploaded content scanning) + E2 (supply-chain security scanning)
 """
 
 from __future__ import annotations

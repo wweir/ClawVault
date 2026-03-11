@@ -50,12 +50,12 @@ claw-vault start --mode interactive
 ## Configuration
 
 ```bash
-claw-vault config init     # Create ~/.claw-vault/config.yaml from template
+claw-vault config init     # Create ~/.ClawVault/config.yaml from template
 claw-vault config show     # Show current settings
 claw-vault config path     # Show config file location
 ```
 
-Edit `~/.claw-vault/config.yaml` to customize. See [`config.example.yaml`](../config.example.yaml) for all options.
+Edit `~/.ClawVault/config.yaml` to customize. See [`config.example.yaml`](../config.example.yaml) for all options.
 
 ## Code Style
 

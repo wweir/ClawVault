@@ -1,6 +1,6 @@
 """Skill-Audit Skill: audit other Skills' behavior, permissions, and runtime activity.
 
-Covers scenarios: C5 (Skill权限管理) + E2 (供应链安全扫描)
+Covers scenarios: C5 (Skill permission governance) + E2 (supply-chain security scanning)
 """
 
 from __future__ import annotations

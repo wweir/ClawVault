@@ -103,7 +103,7 @@ class ClawVaultAddon:
         agent_name = self._extract_agent_name(body)
 
         # Run detection pipeline on user content only
-        scan = self.engine.scan_request(scan_text)
+        scan = self.engine.scan_full(scan_text)
         action_result = self.rules.evaluate(scan)
         logger.info(
             "request_evaluated",
@@ -155,10 +155,10 @@ class ClawVaultAddon:
             # Interactive mode: return a warning as a fake LLM response
             detail_lines = self._format_block_details(scan, action_result)
             warning_msg = (
-                f"⚠️ [ClawVault 安全提醒]\n\n"
+                f"⚠️ [ClawVault Security Alert]\n\n"
                 f"{action_result.reason}\n\n"
                 f"{detail_lines}\n\n"
-                f"请修改您的消息后重新发送，或联系管理员调整安全策略。"
+                f"Please modify your message and resend, or contact an administrator to adjust the security policy."
             )
             flow.response = self._make_llm_response(body, warning_msg)
             logger.info(
@@ -338,15 +338,15 @@ class ClawVaultAddon:
         """Format detection details into human-readable lines for the TUI."""
         lines = []
         if scan.sensitive:
-            lines.append("检测到敏感数据:")
+            lines.append("Sensitive data detected:")
             for s in scan.sensitive:
                 lines.append(f"  • {s.description}: {s.masked_value}")
         if scan.commands:
-            lines.append("检测到危险命令:")
+            lines.append("Dangerous commands detected:")
             for c in scan.commands:
                 lines.append(f"  • {c.reason}: {c.command[:50]}")
         if scan.injections:
-            lines.append("检测到注入攻击:")
+            lines.append("Injection attacks detected:")
             for i in scan.injections:
                 lines.append(f"  • {i.description}")
         if action_result.details:

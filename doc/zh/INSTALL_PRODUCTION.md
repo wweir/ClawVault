@@ -30,13 +30,13 @@ ssh root@<服务器IP>
 cd ~/prj/claw-vault
 source venv/bin/activate
 
-# 初始化配置（创建 ~/.claw-vault/config.yaml）
+# 初始化配置（创建 ~/.ClawVault/config.yaml）
 claw-vault config init
 ```
 
 ### 推荐的生产配置
 
-编辑 `~/.claw-vault/config.yaml`：
+编辑 `~/.ClawVault/config.yaml`：
 
 ```yaml
 proxy:
@@ -124,7 +124,7 @@ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
 pip install -e .
 ```
 
-**HTTPS/SSL 错误**：在 `~/.claw-vault/config.yaml` 中设置 `ssl_verify: false`。
+**HTTPS/SSL 错误**：在 `~/.ClawVault/config.yaml` 中设置 `ssl_verify: false`。
 
 **仪表盘无法远程访问**：使用 SSH 隧道（见上方说明）。
 

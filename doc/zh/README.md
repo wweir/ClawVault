@@ -18,6 +18,14 @@
 | [scenarios.md](./scenarios.md) | 使用场景与路线图 |
 | [GUARD_MODE.md](./GUARD_MODE.md) | 安全模式：strict / interactive / permissive |
 
+## 生成式规则文档
+
+| 文档 | 说明 |
+|------|------|
+| [GENERATIVE_RULES.md](./GENERATIVE_RULES.md) | 生成式规则引擎完整指南（中文） |
+| [GENERATIVE_RULES_QUICKSTART.md](./GENERATIVE_RULES_QUICKSTART.md) | 生成式规则 5 分钟快速上手 |
+| [TEST_CASES_RULES.md](./TEST_CASES_RULES.md) | 自定义规则与测试用例清单 |
+
 ## 脚本
 
 | 脚本 | 说明 |

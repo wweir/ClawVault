@@ -52,7 +52,7 @@ echo "[3/3] Cleaning claw-vault config..."
 if [ "$KEEP_CONFIG" = true ]; then
     echo "  ✓ Keeping config (--keep-config)"
 else
-    CONF_DIR="$HOME/.claw-vault"
+    CONF_DIR="$HOME/.ClawVault"
     if [ -d "$CONF_DIR" ]; then
         echo "  ✓ Config at $CONF_DIR (not removed, use rm -rf to delete manually)"
     fi

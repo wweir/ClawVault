@@ -1,7 +1,7 @@
 """Security-Report Skill: generate security reports, token statistics,
 and risk summaries for users and teams.
 
-Covers scenarios: D1 (安全报告仪表盘) + D2 (Token消耗监控)
+Covers scenarios: D1 (security report dashboard) + D2 (token consumption monitoring)
 """
 
 from __future__ import annotations

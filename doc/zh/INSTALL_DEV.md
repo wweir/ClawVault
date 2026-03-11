@@ -50,12 +50,12 @@ claw-vault start --mode interactive
 ## 配置
 
 ```bash
-claw-vault config init     # 从模板创建 ~/.claw-vault/config.yaml
+claw-vault config init     # 从模板创建 ~/.ClawVault/config.yaml
 claw-vault config show     # 显示当前配置
 claw-vault config path     # 显示配置文件路径
 ```
 
-编辑 `~/.claw-vault/config.yaml` 自定义配置。所有选项见 [`config.example.yaml`](../../config.example.yaml)。
+编辑 `~/.ClawVault/config.yaml` 自定义配置。所有选项见 [`config.example.yaml`](../../config.example.yaml)。
 
 ## 代码风格
 

@@ -84,7 +84,7 @@ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
 pip install -e .
 ```
 
-**HTTPS/SSL 错误**：在 `~/.claw-vault/config.yaml` 中设置 `ssl_verify: false`
+**HTTPS/SSL 错误**：在 `~/.ClawVault/config.yaml` 中设置 `ssl_verify: false`
 
 **OpenClaw 没有使用代理**：设置环境变量后重启 OpenClaw：
 ```bash

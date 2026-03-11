@@ -1,7 +1,7 @@
 """Prompt-Firewall Skill: detect and block prompt injection, poisoning,
 and malicious instructions in user input and external content.
 
-Covers scenarios: A3 (提示词注入检测) + B1 (AI响应安全扫描)
+Covers scenarios: A3 (prompt injection detection) + B1 (AI response security scanning)
 """
 
 from __future__ import annotations

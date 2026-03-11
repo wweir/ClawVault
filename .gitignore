@@ -42,3 +42,7 @@ Thumbs.db
 # Rust (Phase 3)
 target/
 Cargo.lock
+
+.windsurf
+doc/develop
+

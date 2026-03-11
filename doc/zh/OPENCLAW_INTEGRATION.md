@@ -111,7 +111,7 @@ curl -X POST http://localhost:8766/api/config/guard \
 - `*.openai.azure.com`
 - `generativelanguage.googleapis.com`
 
-添加更多域名，编辑 `~/.claw-vault/config.yaml`：
+添加更多域名，编辑 `~/.ClawVault/config.yaml`：
 
 ```yaml
 proxy:
