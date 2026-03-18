@@ -36,7 +36,9 @@ cp -r src clawvault-deploy/
 cp -r tests clawvault-deploy/
 cp -r doc clawvault-deploy/
 cp -r scripts clawvault-deploy/
+cp -r skills clawvault-deploy/
 chmod +x clawvault-deploy/scripts/*.sh 2>/dev/null || true
+chmod +x clawvault-deploy/skills/clawvault-installer-skill/clawvault_manager.py 2>/dev/null || true
 cp pyproject.toml clawvault-deploy/
 cp install.sh clawvault-deploy/
 cp README.md clawvault-deploy/
@@ -151,4 +153,7 @@ echo "  clawvault --version"
 echo ""
 echo "Run quick test:"
 echo "  ./scripts/test.sh"
+echo ""
+echo "Test skills:"
+echo "  python skills/clawvault-installer-skill/clawvault_manager.py health"
 echo ""

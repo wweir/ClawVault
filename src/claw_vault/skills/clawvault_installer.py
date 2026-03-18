@@ -40,7 +40,7 @@ class ClawVaultInstallerSkill(BaseSkill):
             name="clawvault_installer",
             version="1.0.0",
             description="Install, configure, and manage ClawVault security system",
-            author="SPAI Lab",
+            author="Topahnt SPAI Lab",
             permissions=[
                 SkillPermission.EXECUTE_COMMAND,
                 SkillPermission.WRITE_FILES,

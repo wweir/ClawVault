@@ -23,11 +23,6 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
-def help_callback(value: bool):
-    """Show help and exit."""
-    if value:
-        raise typer.Exit(code=0)
-
 app = typer.Typer(
     name="clawvault",
     help="🛡️ ClawVault: Physical-level memory isolation vault for AI credentials",
@@ -46,16 +41,14 @@ def main(
         is_eager=True,
         help="Show version and exit",
     ),
-    help: bool = typer.Option(
-        None,
-        "--help",
-        "-h",
-        callback=help_callback,
-        is_eager=True,
-        help="Show help and exit",
-    ),
 ):
-    """ClawVault CLI."""
+    """ClawVault CLI - AI Security Framework.
+    
+    Protect AI agents from prompt injection, data leakage, and dangerous commands.
+    
+    Use 'clawvault --help' to see all available commands.
+    Use 'clawvault COMMAND --help' to see help for a specific command.
+    """
     pass
 
 

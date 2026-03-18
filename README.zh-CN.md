@@ -27,6 +27,16 @@
 - ✅ 你需要**安全检测**敏感数据、注入攻击和危险命令
 - ✅ 你想要**统一仪表盘**管理所有 AI 安全策略
 
+## 🖼️ 效果展示
+
+<div align="center">
+
+| 交互拦截效果 | 拦截记录 |
+|:------------:|:------------:|
+| <img src="doc/images/block-tui.png" width="400"> | <img src="doc/images/block-web.png" width="400"> |
+
+</div>
+
 ### 核心能力
 
 #### 1. 可视化监控能力
@@ -74,6 +84,28 @@
 保险箱内置 **透明代理网关模块**，用于拦截 AI 工具与外部 API（OpenAI、Anthropic 等）之间的流量。
 
 ## 🚀 快速开始
+
+### 方式 1：作为 OpenClaw Skill 安装（推荐）
+
+```bash
+# 从 ClawHub 安装
+openclaw skills install tophant-clawvault
+
+# 或使用 clawhub CLI 安装
+clawhub install tophant-clawvault
+```
+
+**ClawHub 地址:** https://clawhub.ai/Martin2877/tophant-clawvault
+
+Skill 提供 AI 引导的安装和管理：
+- `/clawvault install --mode quick` - 快速安装
+- `/clawvault health` - 检查状态
+- `/clawvault generate-rule "拦截 AWS 凭证"` - 创建安全规则
+- `/clawvault test --category all` - 运行检测测试
+
+详见 [skills/tophant-clawvault/](skills/tophant-clawvault/) 查看 Skill 文档。
+
+### 方式 2：作为 Python 包安装
 
 ```bash
 # 安装
@@ -197,7 +229,7 @@ pytest
 
 ## 📄 许可证
 
-MIT © 2026 [Tophant](https://www.tophant.com/)
+MIT © 2026 [Tophant](https://www.tophant.com/) SPAI Lab
 
 ---
 

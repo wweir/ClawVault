@@ -52,7 +52,7 @@ class SkillManifest:
     name: str
     version: str
     description: str
-    author: str = "SPAI Lab"
+    author: str = "Tophant SPAI Lab"
     permissions: list[SkillPermission] = field(default_factory=list)
     tags: list[str] = field(default_factory=list)
     homepage: str = ""
