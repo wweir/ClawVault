@@ -39,9 +39,11 @@ https://github.com/user-attachments/assets/361db35e-d85c-493b-a3b2-517164659a01
 ## 🖼️ 效果展示
 
 <div align="center">
+  
 | 交互拦截效果 | 拦截记录 |
 |:------------:|:------------:|
 | <img src="doc/images/block-tui.png" width="400"> | <img src="doc/images/block-web.png" width="400"> |
+
 </div>
 
 https://github.com/user-attachments/assets/d580cfa1-8410-4095-90cb-3d693413a24e
