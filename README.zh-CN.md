@@ -96,6 +96,8 @@ https://github.com/user-attachments/assets/d580cfa1-8410-4095-90cb-3d693413a24e
 
 ## 🚀 快速开始
 
+https://github.com/user-attachments/assets/1f424172-8833-4ccc-b0d2-abf67c1758dd
+
 ### 方式 1：作为 OpenClaw Skill 安装（推荐）
 
 ```bash
