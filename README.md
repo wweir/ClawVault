@@ -45,6 +45,8 @@ https://github.com/user-attachments/assets/2098b271-f844-4db5-b44a-f836e36d314c
 
 </div>
 
+https://github.com/user-attachments/assets/d580cfa1-8410-4095-90cb-3d693413a24e
+
 ### Core Capabilities
 
 #### 1. Visual Monitoring
